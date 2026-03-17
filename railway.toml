@@ -1,5 +1,5 @@
 [build]
-command = "npm install && cd client && npm install && npx vite build && cd ../server && npm install"
+command = "npm run setup"
 
 [deploy]
-startCommand = "node server/index.js"
+startCommand = "npm start"
