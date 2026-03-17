@@ -1,0 +1,22 @@
+image: gitpod/workspace-node-lts
+
+tasks:
+  - name: Setup & Start
+    init: |
+      cd server && npm install && cd ../client && npm install && npx vite build && cd ..
+    command: |
+      echo "🔥 Starting Spartan Training App..."
+      export AUTH_PIN="${AUTH_PIN:-spartan2025}"
+      export DB_PATH="${GITPOD_REPO_ROOT}/data/spartan.db"
+      mkdir -p data
+      node server/index.js
+
+ports:
+  - port: 3000
+    onOpen: open-browser
+    visibility: public
+    name: Spartan Training App
+
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint

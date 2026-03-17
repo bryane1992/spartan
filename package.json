@@ -1,0 +1,15 @@
+{
+  "name": "spartan-training-app",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:server": "cd server && node index.js",
+    "dev:client": "cd client && npx vite",
+    "build:client": "cd client && npx vite build",
+    "start": "node server/index.js",
+    "setup": "cd client && npm install && npx vite build && cd ../server && npm install"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
