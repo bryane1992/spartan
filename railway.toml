@@ -1,5 +1,5 @@
 [build]
-command = "npm install && npm run setup"
+command = "npm run railway:build"
 
 [deploy]
-startCommand = "npm start"
+startCommand = "npm run railway:start"

@@ -1,5 +1,5 @@
 [phases.build]
-cmds = ['npm install', 'npm run setup']
+cmds = ['npm run railway:build']
 
 [phases.start]
-cmd = 'npm start'
+cmd = 'npm run railway:start'

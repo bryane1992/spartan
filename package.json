@@ -12,7 +12,9 @@
     "dev:client": "cd client && npx vite",
     "build:client": "cd client && npx vite build",
     "start": "node server/index.js",
-    "setup": "cd client && npm install && npx vite build && cd ../server && npm install"
+    "setup": "cd client && npm install && npx vite build && cd ../server && npm install",
+    "railway:build": "npm install && cd client && npm install && npm run build && cd ../server && npm install",
+    "railway:start": "node server/index.js"
   },
   "engines": {
     "node": ">=18"
