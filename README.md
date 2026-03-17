@@ -92,3 +92,4 @@ To persist your SQLite database between deploys on Railway:
 3. Set env var: `DB_PATH=/data/spartan.db`
 
 This ensures your workout data survives redeploys.
+# Railway deployment trigger
