@@ -1,5 +1,5 @@
 [build]
-command = "cd client && npm install && npx vite build && cd ../server && npm install"
+command = "cd client && npm install && npx vite build && cd .. && cd server && npm install"
 
 [deploy]
-startCommand = "node server/index.js"
+startCommand = "cd server && node index.js"
