@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { loadState, saveDay, setWeek as apiSetWeek, resetAll as apiReset, seedData, setPin, getPin } from "./api.js";
+import RunTracker from "./RunTracker.jsx";
 
 const DAYS = ["MON","TUE","WED","THU","FRI"];
 const F = { h:"'Oswald',sans-serif", m:"'JetBrains Mono',monospace" };
@@ -148,6 +149,7 @@ const SEED_DATA = {1:{
 // ══════════════════════════════════════════════════════════════════════════════
 const I={
   ck:<svg width="13" height="13" viewBox="0 0 18 18" fill="none"><path d="M4 9L7.5 12.5L14 5.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>,
+  run:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   ch:o=><svg width="13" height="13" viewBox="0 0 16 16" fill="none" style={{transform:o?"rotate(180deg)":"",transition:"transform .2s"}}><path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>,
   fire:<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 23c-4.97 0-9-3.58-9-8 0-3.07 2.13-5.59 3.5-7.13.37-.42 1.07-.15 1.07.42 0 1.48.67 2.56 1.71 2.56.7 0 1.07-.42 1.27-.87.55-1.22.73-3.04.17-5.34-.14-.57.47-1.01.97-.68C15.32 6.56 21 10.53 21 15c0 4.42-4.03 8-9 8z"/></svg>,
   chart:<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/></svg>,
@@ -183,14 +185,27 @@ function ExRow({ex,bk,ei,dl,tog,logCh,col}){
   </div>);
 }
 
-function Blk({b,bi,dl,tog,logCh,arCh}){
+function Blk({b,bi,dl,tog,logCh,arCh,onRunTracker}){
   const [open,setOpen]=useState(true);
   const dn=b.ex.filter((_,i)=>dl?.ck?.[`${bi}-${i}`]).length,tt=b.ex.length;
+  const isRunBlock = b.n && b.n.includes("RUN");
   return(<div style={{marginBottom:12,background:"rgba(255,255,255,0.02)",borderRadius:10,border:"1px solid rgba(255,255,255,0.05)",overflow:"hidden"}}>
     <div style={{height:2,background:"rgba(255,255,255,0.04)"}}><div style={{height:"100%",width:`${tt?dn/tt*100:0}%`,background:b.c,transition:"width .3s",borderRadius:"0 1px 1px 0"}}/></div>
     <div onClick={()=>setOpen(!open)} style={{padding:"11px 12px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
       <div><div style={{fontFamily:F.h,fontSize:14,fontWeight:600,color:"#fff",letterSpacing:.5}}>{b.n}</div><div style={{fontFamily:F.m,fontSize:9,color:"rgba(255,255,255,0.2)",letterSpacing:1.1,marginTop:1}}>{b.t} • {b.tm}</div></div>
-      <div style={{display:"flex",alignItems:"center",gap:7}}><span style={{fontFamily:F.m,fontSize:10,color:"rgba(255,255,255,0.2)"}}>{dn}/{tt}</span><span style={{color:"rgba(255,255,255,0.2)"}}>{I.ch(open)}</span></div>
+      <div style={{display:"flex",alignItems:"center",gap:7}}>
+        {isRunBlock && onRunTracker && (
+          <button
+            onClick={(e)=>{e.stopPropagation();onRunTracker();}}
+            style={{background:"#0074D9",border:"none",borderRadius:5,padding:"4px 8px",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}
+            title="Start GPS Run Tracker"
+          >
+            {I.run}
+            <span style={{fontFamily:F.m,fontSize:9,color:"#fff"}}>TRACK</span>
+          </button>
+        )}
+        <span style={{fontFamily:F.m,fontSize:10,color:"rgba(255,255,255,0.2)"}}>{dn}/{tt}</span><span style={{color:"rgba(255,255,255,0.2)"}}>{I.ch(open)}</span>
+      </div>
     </div>
     {open&&<div style={{padding:"0 12px 10px"}}>
       {b.ex.map((ex,i)=>(<ExRow key={i} ex={ex} bk={bi} ei={i} dl={dl} tog={tog} logCh={logCh} col={b.c}/>))}
@@ -621,6 +636,7 @@ export default function App(){
   const [ss,setSs]=useState("");
   const [pin,setPinState]=useState(getPin());
   const [authed,setAuthed]=useState(false);
+  const [showRunTracker,setShowRunTracker]=useState(false);
   const saveTimer=useRef(null);
   const stRef=useRef(null);
 
@@ -798,7 +814,7 @@ export default function App(){
             <div style={{fontSize:22,fontWeight:700,lineHeight:1,letterSpacing:.5}}>{pg.title}</div>
             <div style={{fontFamily:F.m,fontSize:10,color:"rgba(255,255,255,0.2)",marginTop:5}}>{dE}/{tE} exercises • Tap to check off & log</div>
           </div>
-          {pg.blocks.map((b,bi)=>(<Blk key={bi} b={b} bi={bi} dl={dl} tog={k=>tog(ad,k)} logCh={(k,f,v)=>logC(ad,k,f,v)} arCh={(b2,v)=>arC(ad,b2,v)}/>))}
+          {pg.blocks.map((b,bi)=>(<Blk key={bi} b={b} bi={bi} dl={dl} tog={k=>tog(ad,k)} logCh={(k,f,v)=>logC(ad,k,f,v)} arCh={(b2,v)=>arC(ad,b2,v)} onRunTracker={(ad===1||ad===4)?()=>setShowRunTracker(true):null}/>))}
           {dE===tE&&tE>0&&<div style={{textAlign:"center",padding:16,background:"rgba(1,255,112,0.04)",borderRadius:10,border:"1px solid rgba(1,255,112,0.12)",marginBottom:12}}>
             <div style={{fontSize:26,fontWeight:700,color:"#01FF70",letterSpacing:2}}>AROO!</div>
             <div style={{fontFamily:F.m,fontSize:10,color:"rgba(255,255,255,0.3)",marginTop:2}}>{pg.day} W{st.week} COMPLETE</div>
@@ -811,6 +827,26 @@ export default function App(){
           <button onClick={reset} style={{background:"none",border:"none",fontFamily:F.m,fontSize:7,color:"rgba(255,65,54,0.15)",cursor:"pointer"}}>RESET</button>
         </div>
       </div>
+      {showRunTracker && (
+        <div style={{position:"fixed",top:0,left:0,right:0,bottom:0,background:"rgba(0,0,0,0.95)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
+          <div style={{width:"100%",maxWidth:500,height:"100vh",background:"#0A0A0A",overflow:"auto"}}>
+            <div style={{padding:"10px 14px",background:"#141414",borderBottom:"1px solid rgba(255,255,255,0.1)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div style={{fontFamily:F.h,fontSize:16,fontWeight:600,color:"#0074D9",letterSpacing:.5}}>RUN TRACKER</div>
+              <button
+                onClick={()=>setShowRunTracker(false)}
+                style={{background:"none",border:"none",color:"rgba(255,255,255,0.4)",fontSize:20,cursor:"pointer"}}
+              >×</button>
+            </div>
+            <RunTracker
+              onComplete={(data)=>{
+                console.log('Run completed:', data);
+                setShowRunTracker(false);
+                // TODO: Save run data to workout log
+              }}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
