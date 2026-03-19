@@ -21,10 +21,16 @@ const RUN_CONFIGS = {
       { name: "Cool-down", duration: 300, type: "easy" }
     ]
   },
+  LONG_RUN: {
+    name: "LONG RUN", 
+    segments: [
+      { name: "Steady Run", duration: 3600, type: "steady" } // 60 min max (user stops when done)
+    ]
+  },
   LONG: {
     name: "LONG RUN", 
     segments: [
-      { name: "Steady Run", duration: 2400, type: "steady" } // 40 min default
+      { name: "Steady Run", duration: 3600, type: "steady" } // 60 min max
     ]
   },
   FARTLEK: {
@@ -59,21 +65,31 @@ export default function RunTracker({ runType = "INTERVALS", rounds = 4, onComple
   // Build segment list based on run type and rounds
   useEffect(() => {
     const config = RUN_CONFIGS[runType];
+    if (!config) {
+      console.error(`Unknown run type: ${runType}`);
+      return;
+    }
+    
     let fullSegments = [];
     
-    config.segments.forEach(seg => {
-      if (seg.repeat && runType === "INTERVALS") {
-        // Add repeated intervals
-        for (let i = 0; i < rounds; i++) {
-          fullSegments.push(
-            { ...seg, name: `${seg.name} ${i + 1}/${rounds}`, round: i + 1 },
-            { ...config.segments[2], name: `Recovery ${i + 1}/${rounds}`, round: i + 1 }
-          );
+    if (runType === "LONG_RUN" || runType === "LONG") {
+      // For long runs, just one continuous segment
+      fullSegments = config.segments;
+    } else {
+      config.segments.forEach(seg => {
+        if (seg.repeat && runType === "INTERVALS") {
+          // Add repeated intervals
+          for (let i = 0; i < rounds; i++) {
+            fullSegments.push(
+              { ...seg, name: `${seg.name} ${i + 1}/${rounds}`, round: i + 1 },
+              { ...config.segments[2], name: `Recovery ${i + 1}/${rounds}`, round: i + 1 }
+            );
+          }
+        } else if (!seg.repeat) {
+          fullSegments.push(seg);
         }
-      } else if (!seg.repeat) {
-        fullSegments.push(seg);
-      }
-    });
+      });
+    }
 
     setSegments(fullSegments);
   }, [runType, rounds]);

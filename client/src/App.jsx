@@ -637,7 +637,7 @@ export default function App(){
   const [ss,setSs]=useState("");
   const [pin,setPinState]=useState(getPin());
   const [authed,setAuthed]=useState(false);
-  const [showRunTracker,setShowRunTracker]=useState(false);
+  const [showRunTracker,setShowRunTracker]=useState(null);
   const saveTimer=useRef(null);
   const stRef=useRef(null);
 
@@ -817,7 +817,7 @@ export default function App(){
           </div>
           {pg.blocks.map((b,bi)=>{
             console.log(`Day: ${DAYS[ad]}, ad: ${ad}, should show tracker: ${(ad===1||ad===4)}`);
-            return (<Blk key={bi} b={b} bi={bi} dl={dl} tog={k=>tog(ad,k)} logCh={(k,f,v)=>logC(ad,k,f,v)} arCh={(b2,v)=>arC(ad,b2,v)} onRunTracker={(ad===1||ad===4)?()=>setShowRunTracker(true):null}/>);
+            return (<Blk key={bi} b={b} bi={bi} dl={dl} tog={k=>tog(ad,k)} logCh={(k,f,v)=>logC(ad,k,f,v)} arCh={(b2,v)=>arC(ad,b2,v)} onRunTracker={(ad===1||ad===4)?()=>setShowRunTracker({show:true,day:ad}):null}/>);
           })}
           {dE===tE&&tE>0&&<div style={{textAlign:"center",padding:16,background:"rgba(1,255,112,0.04)",borderRadius:10,border:"1px solid rgba(1,255,112,0.12)",marginBottom:12}}>
             <div style={{fontSize:26,fontWeight:700,color:"#01FF70",letterSpacing:2}}>AROO!</div>
@@ -837,14 +837,16 @@ export default function App(){
             <div style={{padding:"10px 14px",background:"#141414",borderBottom:"1px solid rgba(255,255,255,0.1)",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div style={{fontFamily:F.h,fontSize:16,fontWeight:600,color:"#0074D9",letterSpacing:.5}}>RUN TRACKER</div>
               <button
-                onClick={()=>setShowRunTracker(false)}
+                onClick={()=>setShowRunTracker(null)}
                 style={{background:"none",border:"none",color:"rgba(255,255,255,0.4)",fontSize:20,cursor:"pointer"}}
               >×</button>
             </div>
             <RunTracker
+              runType={showRunTracker?.day === 1 ? "INTERVALS" : "LONG_RUN"}
+              rounds={showRunTracker?.day === 1 ? Math.max(4, Math.floor(st.week/3) + 2) : 0}
               onComplete={(data)=>{
                 console.log('Run completed:', data);
-                setShowRunTracker(false);
+                setShowRunTracker(null);
                 // TODO: Save run data to workout log
               }}
             />
