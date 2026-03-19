@@ -846,8 +846,40 @@ export default function App(){
               rounds={showRunTracker?.day === 1 ? Math.max(4, Math.floor(st.week/3) + 2) : 0}
               onComplete={(data)=>{
                 console.log('Run completed:', data);
+                
+                // Auto-save run data to workout log
+                const dayIdx = showRunTracker.day;
+                const runBlockIdx = dayIdx === 1 ? 1 : 1; // Run block is usually index 1
+                const runExIdx = 0; // First exercise in run block
+                const key = `${runBlockIdx}-${runExIdx}`;
+                
+                // Format run data for log
+                const distance = (data.totalDistance / 1609.34).toFixed(2); // Convert to miles
+                const time = Math.floor(data.totalTime / 60);
+                const pace = data.totalDistance > 0 ? (data.totalTime / 60) / (data.totalDistance / 1609.34) : 0;
+                
+                // Update the log with run data
+                ul(dayIdx, l => {
+                  l.ck[key] = 1; // Mark as completed
+                  l.lg[key] = {
+                    a: `${time} min`,
+                    wt: `${distance} mi`,
+                    n: `Pace: ${pace.toFixed(1)} min/mi`
+                  };
+                  
+                  // Log intervals if it was an interval run
+                  if (data.splits && data.splits.length > 0) {
+                    const intervals = data.splits.filter(s => s.type === 'hard').length;
+                    const avgHardPace = data.splits
+                      .filter(s => s.type === 'hard')
+                      .reduce((sum, s) => sum + s.pace, 0) / intervals || 0;
+                    l.lg[key].n = `${intervals} intervals, Avg hard pace: ${avgHardPace.toFixed(1)} min/mi`;
+                  }
+                });
+                
+                setSs("✓ Run saved!");
+                setTimeout(() => setSs(""), 2000);
                 setShowRunTracker(null);
-                // TODO: Save run data to workout log
               }}
             />
           </div>
