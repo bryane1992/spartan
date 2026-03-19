@@ -197,11 +197,11 @@ function Blk({b,bi,dl,tog,logCh,arCh,onRunTracker}){
         {isRunBlock && onRunTracker && (
           <button
             onClick={(e)=>{e.stopPropagation();onRunTracker();}}
-            style={{background:"#0074D9",border:"none",borderRadius:5,padding:"4px 8px",cursor:"pointer",display:"flex",alignItems:"center",gap:4}}
+            style={{background:"#0074D9",border:"2px solid #fff",borderRadius:5,padding:"6px 10px",cursor:"pointer",display:"flex",alignItems:"center",gap:4,boxShadow:"0 2px 8px rgba(0,116,217,0.4)"}}
             title="Start GPS Run Tracker"
           >
             {I.run}
-            <span style={{fontFamily:F.m,fontSize:9,color:"#fff"}}>TRACK</span>
+            <span style={{fontFamily:F.m,fontSize:10,color:"#fff",fontWeight:600}}>TRACK RUN</span>
           </button>
         )}
         <span style={{fontFamily:F.m,fontSize:10,color:"rgba(255,255,255,0.2)"}}>{dn}/{tt}</span><span style={{color:"rgba(255,255,255,0.2)"}}>{I.ch(open)}</span>
