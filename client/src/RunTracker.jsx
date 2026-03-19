@@ -200,18 +200,7 @@ export default function RunTracker({ runType = "INTERVALS", rounds = 4, onComple
     if (isRunning && !isPaused) {
       intervalRef.current = setInterval(() => {
         setTotalTime(prev => prev + 1);
-        setSegmentTime(prev => {
-          const newTime = prev + 1;
-          const currentSeg = segments[currentSegment];
-          
-          // Auto-advance to next segment
-          if (currentSeg && newTime >= currentSeg.duration) {
-            nextSegment();
-            return 0;
-          }
-          
-          return newTime;
-        });
+        setSegmentTime(prev => prev + 1);
       }, 1000);
     } else {
       if (intervalRef.current) {
@@ -224,7 +213,15 @@ export default function RunTracker({ runType = "INTERVALS", rounds = 4, onComple
         clearInterval(intervalRef.current);
       }
     };
-  }, [isRunning, isPaused, currentSegment, segments, nextSegment]);
+  }, [isRunning, isPaused]);
+  
+  // Check for segment transitions
+  useEffect(() => {
+    const currentSeg = segments[currentSegment];
+    if (currentSeg && segmentTime >= currentSeg.duration && isRunning && !isPaused) {
+      nextSegment();
+    }
+  }, [segmentTime, currentSegment, segments, isRunning, isPaused, nextSegment]);
 
   // Start run
   const startRun = () => {
