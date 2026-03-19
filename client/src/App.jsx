@@ -189,6 +189,7 @@ function Blk({b,bi,dl,tog,logCh,arCh,onRunTracker}){
   const [open,setOpen]=useState(true);
   const dn=b.ex.filter((_,i)=>dl?.ck?.[`${bi}-${i}`]).length,tt=b.ex.length;
   const isRunBlock = b.n && b.n.includes("RUN");
+  console.log(`Block: ${b.n}, isRunBlock: ${isRunBlock}, onRunTracker: ${!!onRunTracker}`);
   return(<div style={{marginBottom:12,background:"rgba(255,255,255,0.02)",borderRadius:10,border:"1px solid rgba(255,255,255,0.05)",overflow:"hidden"}}>
     <div style={{height:2,background:"rgba(255,255,255,0.04)"}}><div style={{height:"100%",width:`${tt?dn/tt*100:0}%`,background:b.c,transition:"width .3s",borderRadius:"0 1px 1px 0"}}/></div>
     <div onClick={()=>setOpen(!open)} style={{padding:"11px 12px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -814,7 +815,10 @@ export default function App(){
             <div style={{fontSize:22,fontWeight:700,lineHeight:1,letterSpacing:.5}}>{pg.title}</div>
             <div style={{fontFamily:F.m,fontSize:10,color:"rgba(255,255,255,0.2)",marginTop:5}}>{dE}/{tE} exercises • Tap to check off & log</div>
           </div>
-          {pg.blocks.map((b,bi)=>(<Blk key={bi} b={b} bi={bi} dl={dl} tog={k=>tog(ad,k)} logCh={(k,f,v)=>logC(ad,k,f,v)} arCh={(b2,v)=>arC(ad,b2,v)} onRunTracker={(ad===1||ad===4)?()=>setShowRunTracker(true):null}/>))}
+          {pg.blocks.map((b,bi)=>{
+            console.log(`Day: ${DAYS[ad]}, ad: ${ad}, should show tracker: ${(ad===1||ad===4)}`);
+            return (<Blk key={bi} b={b} bi={bi} dl={dl} tog={k=>tog(ad,k)} logCh={(k,f,v)=>logC(ad,k,f,v)} arCh={(b2,v)=>arC(ad,b2,v)} onRunTracker={(ad===1||ad===4)?()=>setShowRunTracker(true):null}/>);
+          })}
           {dE===tE&&tE>0&&<div style={{textAlign:"center",padding:16,background:"rgba(1,255,112,0.04)",borderRadius:10,border:"1px solid rgba(1,255,112,0.12)",marginBottom:12}}>
             <div style={{fontSize:26,fontWeight:700,color:"#01FF70",letterSpacing:2}}>AROO!</div>
             <div style={{fontFamily:F.m,fontSize:10,color:"rgba(255,255,255,0.3)",marginTop:2}}>{pg.day} W{st.week} COMPLETE</div>
