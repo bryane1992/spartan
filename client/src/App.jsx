@@ -67,72 +67,126 @@ function genWeek(wk, prev) {
   const dt = tl[Math.min(wk-getPhase(wk).weeks[0], tl.length-1)];
 
   const mon = { day:"MON", title:dt[0], color:"#FF4136",
-    focus: bm?"BENCHMARK WEEK — Test your maxes!":`${p} • Flat Bench + Curls + Skulls • DB at ${dbMon} lb`,
+    focus: bm?"BENCHMARK WEEK — Test your strength!":`${p} • Total Body Power`,
     blocks:[
-      { n:"WARM-UP",t:"ACTIVATE",tm:"5 min",c:"#555",ex:[{name:"Jump Rope",rx:"2 min",ld:"Build pace"},{name:"Arm Circles",rx:"10 ea",ld:"Both directions"},{name:"Bodyweight Squats",rx:"10",ld:"Deep"},{name:"Push-Up to Down Dog",rx:"5",ld:"Flow"}]},
-      { n:"HEAVY CHEST",t:bm?"BENCHMARK PRESS":"FLAT BENCH POWER",tm:bm?"Build to heavy 5":"4 sets • 60s rest",c:"#FF4136",note:bm?"Find your best 5-rep. Beat it in 4 weeks.":"3s down, explode up.",
-        ex:[{name:"Bench Press",rx:bm?"5-5-5-5 (build up)":"4×8–10",ld:`${bump(pw(0,1,0),bb)} lb`,w:"Main chest builder"},{name:"DB Floor Fly to Press",rx:"3×12",ld:`${Math.max(10,dbMon-15)} lb DBs`,w:"Chest stretch + press"}]},
-      { n:"LEGS",t:"SQUAT STRENGTH",tm:"3 sets • 90s rest",c:"#FF851B",note:`Squat heavy, arms while you rest legs.`,
-        ex:[{name:wk>=5?"Back Squat":"Clean to Front Squat",rx:bm?"5-5-5-5":"3×8–10",ld:`${bump(pw(0,2,0),sq)} lb`,w:"Primary quad & core"},{name:"DB Romanian Deadlift",rx:"3×10",ld:`${dbMon} lb DBs`,w:"Hamstrings & glutes"}]},
-      { n:"ARMS SUPERSET",t:"CURL + SKULL",tm:"3 supersets • 45s rest",c:"#B10DC9",note:"Curl immediately into skull crushers. No rest between.",
-        ex:[{name:wk>=5?"Barbell Curl":"DB Curl to Press",rx:"3×10",ld:wk>=5?`${Math.min(bump(pw(0,3,0),45),75)} lb`:`${dbMon} lb DBs`,w:"Bicep mass"},{name:wk>=5?"Skull Crushers":"Close Push-Ups",rx:wk>=5?"3×10":"3×max",ld:wk>=5?`${Math.min(bump(pw(0,3,1),45),75)} lb`:"BW",w:"Tricep mass"},{name:"DB Hammer Curl",rx:"2×12",ld:`${dbMon} lb DBs`,w:"Arm width"}]},
-      { n:"AMRAP FINISHER",t:bm?"BENCHMARK AMRAP":"CONDITIONING",tm:bm?"10 min":"8 min",c:"#01FF70",amrap:true,note:"Track rounds. Beat last week.",
-        ex:[{name:"KB Swings",rx:"15",ld:"35 lb",w:"Posterior chain"},{name:"Burpees",rx:"10",ld:"BW",w:"Replaces run — keep moving"},{name:"Jump Squats",rx:"10",ld:"BW",w:"Explosive legs"},{name:"Push-Ups",rx:"10",ld:"BW",w:"Chest endurance"}]},
-      { n:"COOL-DOWN",t:"RECOVER",tm:"5 min",c:"#555",ex:[{name:"Walk",rx:"2 min",ld:"Easy"},{name:"Chest & Forearm Stretch",rx:"60s",ld:"Both"}]},
+      { n:"WARM-UP",t:"MOVEMENT PREP",tm:"8 min",c:"#555",ex:[{name:"Row or Run",rx:"3 min",ld:"Gradually build pace"},{name:"Dynamic Stretching",rx:"2 min",ld:"Leg swings, arm circles"},{name:"Goblet Squats",rx:"10",ld:"Light KB",w:"Hip mobility"},{name:"Push-Up to T",rx:"10 alt",ld:"BW",w:"Shoulder stability"},{name:"Band Pull-Aparts",rx:"20",ld:"Light band",w:"Rear delts"}]},
+      { n:"POWER LIFTS",t:bm?"STRENGTH TEST":"COMPOUND MOVEMENTS",tm:"25 min",c:"#FF4136",note:bm?"Work up to heavy singles":"Focus on power & form",
+        ex:[
+          {name:wk>=5?"Deadlift":"Trap Bar Deadlift",rx:bm?"Build to heavy 3":`5×5`,ld:`${bump(pw(0,1,0),135,225)} lb`,w:"Total body power"},
+          {name:"Bench Press",rx:bm?"Build to heavy 5":`5×5`,ld:`${bump(pw(0,1,1),bb)} lb`,w:"Upper body strength"},
+          {name:wk>=5?"Back Squat":"Front Squat",rx:bm?"Build to heavy 5":`5×5`,ld:`${bump(pw(0,1,2),sq)} lb`,w:"Leg drive"}
+        ]},
+      { n:"ACCESSORY CIRCUIT",t:"SUPERSETS",tm:"12 min",c:"#FF851B",note:"Move quickly between exercises",
+        ex:[
+          {name:"Pull-Ups",rx:`3×${Math.min(5+Math.floor(wk/2),12)}`,ld:"BW",w:"Back strength"},
+          {name:"Dips",rx:`3×${Math.min(8+Math.floor(wk/2),15)}`,ld:"BW",w:"Chest & triceps"},
+          {name:"Walking Lunges",rx:"3×10 ea",ld:`${Math.max(20,dbMon-10)} lb DBs`,w:"Unilateral strength"}
+        ]},
+      { n:"CORE FINISHER",t:"SPARTAN CORE",tm:"8 min",c:"#01FF70",amrap:true,note:"Quality over speed",
+        ex:[{name:"Plank to Push-Up",rx:"10",ld:"BW",w:"Core stability"},{name:"V-Ups",rx:"15",ld:"BW",w:"Ab strength"},{name:"Russian Twists",rx:"20",ld:"25 lb plate",w:"Rotation"},{name:"Bear Crawl",rx:"10 steps",ld:"BW",w:"Full body"}]},
+      { n:"COOL-DOWN",t:"MOBILITY",tm:"5 min",c:"#555",ex:[{name:"Foam Roll",rx:"2 min",ld:"Focus on tight spots"},{name:"Couch Stretch",rx:"60s ea",ld:"Hip flexors"},{name:"Shoulder Dislocates",rx:"15",ld:"PVC pipe"}]},
     ]};
 
-  const tue = { day:"TUE", title:dt[1], color:"#0074D9",focus:`${runType} • ${runShort} target • Core Circuit`,
+  const tue = { day:"TUE", title:dt[1], color:"#0074D9",focus:`${runType} • ${runShort} target • Functional Core`,
     blocks:[
-      { n:"WARM-UP",t:"LOOSEN UP",tm:"5 min",c:"#555",ex:[{name:"Easy Jog",rx:"3 min",ld:"Conversational"},{name:"High Knees",rx:"30s",ld:"Moderate"},{name:"Butt Kicks",rx:"30s",ld:"Moderate"},{name:"Leg Swings",rx:"10 ea",ld:"Front & lateral"}]},
-      { n:runType==="INTERVALS"?"INTERVAL RUN":runType==="TEMPO"?"TEMPO RUN":runType==="FARTLEK"?"FARTLEK RUN":runType==="RACE PACE"?"RACE PACE RUN":"EASY RUN",t:"10K BUILDER",tm:p==="FOUNDATION"?"20–25 min":p==="BUILD"?"25–35 min":"30–40 min",c:"#0074D9",
-        note:runType==="INTERVALS"?`${intv} rounds: 2 min hard / 1 min easy.`:runType==="TEMPO"?"Comfortably hard for 15–20 min.":runType==="FARTLEK"?"Alternate fast/slow by feel.":runType==="RACE PACE"?"Maintain race-day pace.":"Easy conversational pace.",
-        ex:[{name:"Easy Jog",rx:"5 min",ld:"Warm up",w:"Build into it"},
-          ...(runType==="INTERVALS"?[{name:"Hard Run",rx:"2 min",ld:"80% effort",w:"Push it"},{name:"Recovery Jog",rx:"1 min",ld:"Easy",w:"Keep moving"},{name:`Repeat ×${intv}`,rx:`${intv} rounds`,ld:"2 on / 1 off",w:"Track total distance"}]:[{name:runType==="TEMPO"?"Tempo Run":runType==="FARTLEK"?"Fartlek Run":runType==="RACE PACE"?"Race Pace Run":"Easy Run",rx:p==="BUILD"?"20 min":p==="PEAK"?"25 min":"20 min",ld:runType==="TEMPO"?"Comfortably hard":"Play with speed",w:"Log distance & time"}]),
-          {name:"Cooldown Jog",rx:"5 min",ld:"Easy",w:"Bring HR down"}]},
-      { n:"CORE",t:wk>=9?"6-PACK ATTACK":"BRACE & STABILIZE",tm:"3 rounds • 30s rest",c:"#7FDBFF",note:wk>=9?"Chasing visible abs.":"Strong core = easier obstacles.",
-        ex:[{name:"Plank Hold",rx:`3×${30+wk*2}s`,ld:"BW",w:"Add time each week"},{name:"Dead Bug",rx:"3×12 ea",ld:"BW",w:"Core coordination"},{name:"KB Russian Twist",rx:"3×12 ea",ld:`${wk>=5?35:26} lb KB`,w:"Rotational power"},{name:"Hollow Body Hold",rx:`3×${15+wk}s`,ld:"BW",w:"Total tension"},{name:wk>=9?"Hanging Knee Raise":"Med Ball Sit-Up Throw",rx:"3×12",ld:wk>=9?"BW (from rings)":"Med ball",w:wk>=9?"Upper ab definition":"Explosive flexion"}]},
-      { n:"COOL-DOWN",t:"STRETCH",tm:"5 min",c:"#555",ex:[{name:"Walk",rx:"2 min",ld:"Easy"},{name:"Pigeon Stretch",rx:"30s ea",ld:"Each side"},{name:"Child's Pose",rx:"60s",ld:"Breathe"}]},
+      { n:"WARM-UP",t:"DYNAMIC ACTIVATION",tm:"8 min",c:"#555",ex:[{name:"Easy Jog",rx:"3 min",ld:"Build pace gradually"},{name:"Lunge Matrix",rx:"5 ea direction",ld:"Forward/lateral/reverse"},{name:"A-Skips",rx:"30s",ld:"Running form drill"},{name:"Butt Kicks",rx:"30s",ld:"Hamstring activation"},{name:"Strides",rx:"3×50m",ld:"Build to 80% speed"}]},
+      { n:runType==="INTERVALS"?"INTERVAL RUN":runType==="TEMPO"?"TEMPO RUN":runType==="FARTLEK"?"FARTLEK RUN":runType==="RACE PACE"?"RACE PACE RUN":"EASY RUN",t:"SPARTAN 10K BUILDER",tm:p==="FOUNDATION"?"20–25 min":p==="BUILD"?"25–35 min":"30–40 min",c:"#0074D9",
+        note:runType==="INTERVALS"?`${intv} rounds: 2 min hard / 1 min recovery`:runType==="TEMPO"?"Comfortably hard, race simulation":runType==="FARTLEK"?"Play with speed, mimic race terrain":runType==="RACE PACE"?"Lock in your 10K race pace":"Easy conversational pace",
+        ex:[{name:"Warm-Up Run",rx:"5 min",ld:"Easy pace",w:"GPS tracking available"},
+          ...(runType==="INTERVALS"?[{name:"Hard Interval",rx:"2 min",ld:"80-85% effort",w:"Spartan race pace"},{name:"Recovery Jog",rx:"1 min",ld:"60% effort",w:"Active recovery"},{name:`Repeat ×${intv}`,rx:`${intv} rounds`,ld:"Consistent splits",w:"Track with GPS"}]:[{name:runType==="TEMPO"?"Tempo Run":runType==="FARTLEK"?"Fartlek Run":runType==="RACE PACE"?"Race Pace Run":"Easy Run",rx:p==="BUILD"?"20 min":p==="PEAK"?"25 min":"20 min",ld:runType==="TEMPO"?"Threshold pace":"Variable pace",w:"Use TRACK button"}]),
+          {name:"Cool-Down Run",rx:"5 min",ld:"Easy jog",w:"Gradual recovery"}]},
+      { n:"FUNCTIONAL CORE",t:"OBSTACLE PREP",tm:"15 min",c:"#7FDBFF",note:"Core strength for obstacles",
+        ex:[{name:"Plank to Push-Up",rx:"3×10",ld:"BW",w:"Core stability"},{name:"Bear Crawl Hold",rx:`3×${20+wk*2}s`,ld:"BW",w:"Full body tension"},{name:"Pallof Press",rx:"3×12 ea",ld:"Band or cable",w:"Anti-rotation"},{name:"Turkish Get-Ups",rx:"3×3 ea",ld:`${wk>=5?26:18} lb KB`,w:"Full body control"},{name:wk>=9?"Toes to Bar":"Hanging Knee Raise",rx:"3×8-12",ld:"From bar",w:"Grip + core"}]},
+      { n:"COOL-DOWN",t:"RECOVERY",tm:"5 min",c:"#555",ex:[{name:"Easy Walk",rx:"2 min",ld:"Bring HR down"},{name:"90/90 Hip Stretch",rx:"60s ea",ld:"Each side"},{name:"Calf Stretch",rx:"30s ea",ld:"Wall stretch"},{name:"Hamstring Stretch",rx:"60s ea",ld:"Each leg"}]},
     ]};
 
-  const wed = { day:"WED", title:dt[2], color:"#FF851B",focus:`Incline Chest + Back + Arms • DB at ${dbWed} lb`,
+  const wed = { day:"WED", title:dt[2], color:"#FF851B",focus:p==="FOUNDATION"?"CrossFit Fundamentals":p==="BUILD"?"MetCon Mayhem":"Beast Mode WOD",
     blocks:[
-      { n:"WARM-UP",t:"PRIME",tm:"5 min",c:"#555",ex:[{name:"Jump Rope",rx:"2 min",ld:"Moderate"},{name:"Arm Circles",rx:"15 ea",ld:"Both ways"},{name:"Push-Up to Down Dog",rx:"8",ld:"Flow"},{name:"Scapular Pull-Ups",rx:"8",ld:"BW"}]},
-      { n:"INCLINE CHEST",t:"UPPER CHEST FOCUS",tm:"4 sets • 60s rest",c:"#FF851B",note:"Incline hits upper chest. 3s down, 1s up.",
-        ex:[{name:"Incline DB Press",rx:"4×10",ld:`${dbWed} lb DBs`,w:"Upper chest mass"},{name:"DB Squeeze Press",rx:"3×12",ld:`${Math.max(15,dbWed-5)} lb DBs`,w:"Inner chest definition"},{name:wk>=5?"Incline DB Fly":"DB Floor Fly to Press",rx:"3×12",ld:`${Math.max(10,dbWed-15)} lb DBs`,w:wk>=5?"Chest stretch on incline":"Chest stretch & press"}]},
-      { n:"BACK",t:"WIDTH & THICKNESS",tm:"4 sets • 60s rest",c:"#FF4136",note:"Squeeze shoulder blades on every pull.",
-        ex:[{name:"Ring Pull-Ups",rx:bm?"Max reps ×3":`4×${puReps}`,ld:"BW",w:bm?"Log your best set":"Back width"},{name:"Barbell Bent Over Row",rx:"4×10",ld:`${bump(pw(2,2,1),bb-10)} lb`,w:"Back thickness"},{name:"Ring Inverted Row",rx:"3×12",ld:"BW",w:"Rear delts & mid-back"}]},
-      { n:"ARM BLASTER",t:"BICEP + TRICEP + SHOULDERS",tm:"3 rounds • no rest between",c:"#B10DC9",note:"3 full rounds. Light weight, max pump.",
-        ex:[{name:"DB Hammer Curl",rx:"3×12",ld:`${dbWed} lb DBs`,w:"Arm width"},{name:"Close Push-Ups",rx:"3×max",ld:"BW — hands close",w:"Tricep definition"},{name:"DB Lateral Raise",rx:"3×15",ld:`${Math.max(5,dbWed-20)} lb DBs`,w:"Shoulder caps"},{name:"DB Arnold Press",rx:"3×10",ld:`${dbWed} lb DBs`,w:"Full shoulder development"}]},
-      { n:"COOL-DOWN",t:"RECOVER",tm:"5 min",c:"#555",ex:[{name:"Walk",rx:"2 min",ld:"Easy"},{name:"Chest Doorway Stretch",rx:"30s ea",ld:"Each side"},{name:"Lat & Forearm Stretch",rx:"30s ea",ld:"Both"}]},
+      { n:"WARM-UP",t:"DYNAMIC PREP",tm:"8 min",c:"#555",ex:[{name:"Row/Bike/Run",rx:"3 min",ld:"Build intensity"},{name:"PVC Pass-Throughs",rx:"15",ld:"Shoulder mobility"},{name:"Samson Stretch",rx:"30s ea",ld:"Hip flexors"},{name:"Inchworm to Push-Up",rx:"10",ld:"Full body activation"},{name:"Air Squats",rx:"15",ld:"Deep & controlled"}]},
+      { n:wk>=9?"STRENGTH/SKILL":"SKILL WORK",t:wk>=9?"OLYMPIC LIFTING":"MOVEMENT PRACTICE",tm:"15 min",c:"#FF851B",note:wk>=9?"Build to moderate weight, focus on form":"Practice technique, build confidence",
+        ex:[
+          ...(wk>=5?[{name:"Power Clean",rx:wk>=9?"5×3":"5×5",ld:wk>=9?`${Math.min(bump(pw(2,1,0),75),115)} lb`:"65 lb",w:"Explosive power"}]:[{name:"Hang Power Clean",rx:"5×5",ld:"45 lb bar",w:"Learn the movement"}]),
+          {name:"Front Squat",rx:"3×8",ld:wk>=5?`${Math.min(bump(pw(2,1,1),65),95)} lb`:"45 lb",w:"Core & leg strength"},
+          ...(wk>=9?[{name:"Push Jerk",rx:"3×5",ld:`${Math.min(bump(pw(2,1,2),65),95)} lb`,w:"Overhead power"}]:[])
+        ]},
+      { n:"WOD",t:bm?"BENCHMARK TEST":"WORKOUT OF THE DAY",tm:p==="FOUNDATION"?"12 min":p==="BUILD"?"15 min":"20 min",c:"#FF4136",amrap:true,
+        note:bm?"Go all out! Log rounds + reps":"Pace yourself, maintain form",
+        ex:[
+          ...(p==="FOUNDATION"?[
+            {name:"Box Jumps",rx:"10",ld:"20\" box",w:"Explosive legs"},
+            {name:"Push-Ups",rx:"10",ld:"BW",w:"Upper body endurance"},
+            {name:"KB Swings",rx:"15",ld:"35 lb",w:"Posterior chain"},
+            {name:"Sit-Ups",rx:"15",ld:"BW",w:"Core endurance"}
+          ]:p==="BUILD"?[
+            {name:"Wall Balls",rx:"15",ld:"14 lb",w:"Full body power"},
+            {name:"Pull-Ups",rx:"10",ld:"BW",w:"Back strength"},
+            {name:"Box Jump Overs",rx:"10",ld:"24\" box",w:"Agility"},
+            {name:"Thrusters",rx:"10",ld:"65 lb",w:"Legs & shoulders"}
+          ]:[
+            {name:"Burpee Box Jumps",rx:"10",ld:"24\" box",w:"Full body explosion"},
+            {name:"Toes to Bar",rx:"10",ld:"BW",w:"Core & grip"},
+            {name:"DB Snatches",rx:"10 alt",ld:"35 lb",w:"Power & coordination"},
+            {name:"Double Unders",rx:"30",ld:"Jump rope",w:"Cardio & coordination"}
+          ])
+        ]},
+      { n:"FINISHER",t:wk>=5?"EMOM 10":"TABATA",tm:wk>=5?"10 min":"8 min",c:"#B10DC9",
+        note:wk>=5?"Every Minute On the Minute":"20s on / 10s off × 8 rounds",
+        ex:wk>=5?[
+          {name:"Cal Row/Bike",rx:"12",ld:"Max effort",w:"Minute 1"},
+          {name:"Burpees",rx:"8",ld:"BW",w:"Minute 2"}
+        ]:[
+          {name:"Mountain Climbers",rx:"20s max",ld:"BW",w:"Speed"},
+          {name:"Rest",rx:"10s",ld:"Breathe",w:"Recovery"}
+        ]},
+      { n:"COOL-DOWN",t:"RECOVERY",tm:"8 min",c:"#555",ex:[{name:"Easy Walk/Row",rx:"3 min",ld:"Bring HR down"},{name:"Pigeon Pose",rx:"90s ea",ld:"Hip stretch"},{name:"Child's Pose",rx:"90s",ld:"Back stretch"},{name:"Foam Roll",rx:"3 min",ld:"Focus on tight spots"}]},
     ]};
 
-  const thu = { day:"THU", title:dt[3], color:"#2ECC40",focus:`Heavy Legs + Carries + Incline Chest/Arms • DB at ${dbThu} lb`,
+  const thu = { day:"THU", title:dt[3], color:"#2ECC40",focus:p==="FOUNDATION"?"Functional Strength":p==="BUILD"?"Obstacle Prep":"Race Simulation",
     blocks:[
-      { n:"WARM-UP",t:"FIRE UP",tm:"5 min",c:"#555",ex:[{name:"Jump Rope",rx:"2 min",ld:"Build pace"},{name:"Bodyweight Squat",rx:"10",ld:"Deep & slow"},{name:"Glute Bridge",rx:"10",ld:"2s hold at top"},{name:"Walking Lunge",rx:"10 ea",ld:"BW"}]},
-      { n:"HEAVY LEGS",t:bm?"BEAT MONDAY'S SQUAT":"MASS BUILDERS",tm:"4 sets • 90s rest",c:"#2ECC40",note:bm?"Go heavier than Monday.":"Heavier than Monday. Push it.",
-        ex:[{name:wk>=5?"Back Squat":"Clean to Front Squat",rx:bm?"5-5-5-5":"4×8",ld:`${bump(pw(3,1,0),sq+10)} lb`,w:"Heavier than Monday"},{name:"DB Romanian Deadlift",rx:"4×10",ld:`${dbThu} lb DBs`,w:"Hamstrings & glutes"},{name:"KB Goblet Squat",rx:"3×12",ld:"50 lb KB",w:"Deep quad pump"}]},
-      { n:"CARRY COMPLEX",t:wk>=9?"SPARTAN SIMULATION":"CARRY STRENGTH",tm:"3 rounds • 60s rest",c:"#01FF70",note:wk>=9?"Chain without rest. Race sim.":"Don't put it down.",
-        ex:[{name:"Farmer Carry",rx:"3×50 yd",ld:p==="FOUNDATION"?"45 lb ea":"50+35 lb KBs",w:"Grip & traps"},{name:"Goblet Carry",rx:"3×50 yd",ld:"50 lb KB",w:"Core under load"},{name:"Overhead Carry",rx:"3×30 yd",ld:`${wk>=5?35:20} lb KB`,w:"Shoulder stability"}]},
-      { n:"CHEST & ARMS FINISHER",t:"POST-LEG PUMP",tm:"3 supersets • 45s rest",c:"#FF851B",note:"Growth hormone spiked from squats. Perfect for chest & arms.",
-        ex:[{name:wk>=5?"Incline Bench Press":"Incline DB Press",rx:"3×10",ld:wk>=5?`${Math.min(bump(pw(3,3,0),bb-10),135)} lb`:`${dbThu} lb DBs`,w:"Upper chest"},{name:"DB Curl to Press",rx:"3×10",ld:`${dbThu} lb DBs`,w:"Bicep + shoulder"},{name:wk>=5?"Close-Grip Bench":"Close Push-Ups",rx:wk>=5?"3×10":"3×max",ld:wk>=5?`${Math.min(bump(pw(3,3,2),bb-20),115)} lb`:"BW",w:"Tricep mass"}]},
-      { n:"AMRAP",t:"LEG BURNER",tm:p==="FOUNDATION"?"8 min":"10 min",c:"#FFDC00",amrap:true,note:"Track rounds. Beat last week.",
-        ex:[{name:"KB Swings",rx:"15",ld:"35 lb",w:"Posterior chain"},{name:"Jump Squats",rx:"10",ld:"BW",w:"Explosive"},{name:"Burpees",rx:"5",ld:"BW",w:"Conditioning"}]},
-      { n:"COOL-DOWN",t:"RECOVER",tm:"5 min",c:"#555",ex:[{name:"Walk",rx:"2 min",ld:"Easy"},{name:"Full Body Stretch",rx:"3 min",ld:"Legs, chest, arms"}]},
+      { n:"WARM-UP",t:"ACTIVATE",tm:"8 min",c:"#555",ex:[{name:"Assault Bike/Row",rx:"3 min",ld:"Build intensity"},{name:"Bear Crawl",rx:"20 steps",ld:"Forward & back"},{name:"Cossack Squats",rx:"10 ea",ld:"BW",w:"Hip mobility"},{name:"Spiderman Lunges",rx:"10 ea",ld:"With rotation"},{name:"Burpees",rx:"10",ld:"Get heart rate up"}]},
+      { n:"STRENGTH CIRCUIT",t:"FUNCTIONAL POWER",tm:"20 min",c:"#2ECC40",note:"3 rounds, 90s rest between rounds",
+        ex:[
+          {name:wk>=5?"Sandbag Squat":"Goblet Squat",rx:"3×12",ld:wk>=5?"60 lb bag":"50 lb KB",w:"Functional leg strength"},
+          {name:"Tire Flips",rx:"3×5",ld:"Medium tire",w:"Full body power"},
+          {name:wk>=9?"Rope Climb":"Rope Pull-Ups",rx:wk>=9?"3×1":"3×8",ld:"15 ft rope",w:"Grip & pulling"},
+          {name:"Sled Push",rx:"3×40 yd",ld:p==="FOUNDATION"?"90 lb":p==="BUILD"?"135 lb":"180 lb",w:"Leg drive"}
+        ]},
+      { n:"OBSTACLE TRAINING",t:wk>=9?"RACE SPECIFIC":"BUILD SKILLS",tm:"15 min",c:"#01FF70",note:"Focus on technique, not speed",
+        ex:[
+          {name:"Spear Throw",rx:"10 throws",ld:"Practice form",w:"Accuracy"},
+          {name:"Wall Balls",rx:"3×20",ld:"20 lb",w:"Wall sim"},
+          {name:"Bucket Carry",rx:"2×100 yd",ld:"50 lb",w:"Grip endurance"},
+          ...(wk>=5?[{name:"Atlas Stone Lift",rx:"3×5",ld:"50 lb stone",w:"Heavy carries"}]:[])
+        ]},
+      { n:"CONDITIONING",t:"SPARTAN ENDURANCE",tm:"12 min",c:"#FF851B",amrap:true,note:"Maintain steady pace",
+        ex:[
+          {name:"Box Step-Ups",rx:"10 ea",ld:"20\" box + 25 lb",w:"Weighted endurance"},
+          {name:"Pull-Ups",rx:"8",ld:"BW",w:"Upper body"},
+          {name:"Sandbag Carry",rx:"40 yd",ld:"40 lb",w:"Carry under fatigue"},
+          {name:"Burpee Broad Jumps",rx:"5",ld:"BW",w:"Explosive endurance"}
+        ]},
+      { n:"GRIP FINISHER",t:"SPARTAN GRIP",tm:"5 min",c:"#FFDC00",note:"Don't let go!",
+        ex:[{name:"Dead Hang",rx:"Max hold ×3",ld:"From bar",w:"Rest = 2× hang time"},{name:"Farmer Hold",rx:"Max hold ×2",ld:"Heavy KBs",w:"Crush grip"}]},
+      { n:"COOL-DOWN",t:"RECOVERY",tm:"8 min",c:"#555",ex:[{name:"Easy Walk",rx:"3 min",ld:"Bring HR down"},{name:"Foam Roll",rx:"3 min",ld:"IT band, quads, calves"},{name:"Couch Stretch",rx:"90s ea",ld:"Hip flexors"}]},
     ]};
 
-  const fri = { day:"FRI", title:dt[4], color:"#FFDC00",focus:`Long Run ${runLong} + Obstacles + Arm Pump`,
+  const fri = { day:"FRI", title:dt[4], color:"#FFDC00",focus:`${runLong} Obstacle Run + Grip Work`,
     blocks:[
-      { n:"WARM-UP",t:"EASY START",tm:"5 min",c:"#555",ex:[{name:"Easy Jog",rx:"3 min",ld:"Slow"},{name:"High Knees",rx:"30s",ld:"Wake up"},{name:"Butt Kicks",rx:"30s",ld:"Hamstrings"}]},
-      { n:"LONG RUN",t:"BUILD YOUR 10K",tm:p==="FOUNDATION"?"20–25 min":p==="BUILD"?"25–35 min":p==="PEAK"?"35–50 min":"45–55 min",c:"#FFDC00",
-        note:p==="RACE PREP"?"Race-day pace.":"Target: "+runLong+". Conversational pace.",
-        ex:[{name:"Steady Run",rx:p==="FOUNDATION"?"20–25 min":p==="BUILD"?"30–35 min":p==="PEAK"?"40–50 min":"45–55 min",ld:p==="RACE PREP"?"Race pace":"Conversational",w:"Log distance & time!"}]},
-      { n:"OBSTACLE CIRCUIT",t:"POST-RUN SIM",tm:"3 rounds • minimal rest",c:"#FF851B",note:"Immediately after the run.",
-        ex:[{name:"Ring Pull-Ups",rx:`3×${Math.min(3+Math.floor(wk/4),8)}`,ld:"BW",w:"Grip under fatigue"},{name:"Ring Dead Hang",rx:"3×max hold",ld:"BW",w:"Rig simulation"},{name:"Farmer Carry",rx:"3×50 yd",ld:"45 lb ea",w:"Carry under fatigue"},{name:"Burpee Broad Jumps",rx:`3×${wk>=9?8:5}`,ld:"BW",w:"Explosive when tired"},...(wk>=5?[{name:"Med Ball Over Shoulder",rx:"3×8",ld:"Med ball",w:"Atlas/wall sim"}]:[])]},
-      { n:"FRIDAY ARM PUMP",t:"SEND-OFF PUMP",tm:"2 quick rounds",c:"#B10DC9",note:"Quick pump. Light, high reps.",
-        ex:[{name:"Push-Ups",rx:"2×20",ld:"BW",w:"Chest pump"},{name:"DB Curl to Press",rx:"2×12",ld:`${Math.max(15,dbWed)} lb DBs`,w:"Arm pump"},...(wk>=5?[{name:"Diamond Push-Ups",rx:"2×max",ld:"BW",w:"Tricep burnout"}]:[])]},
-      { n:"AMRAP",t:bm?"BENCHMARK — END OF PHASE":"FRIDAY SEND-OFF",tm:p==="FOUNDATION"?"6 min":"8 min",c:"#01FF70",amrap:true,note:bm?"Everything you've got.":"End strong.",
-        ex:[{name:"Run",rx:p==="FOUNDATION"?"100m":"200m",ld:"Sprint",w:"Speed burst"},{name:"Push-Ups",rx:"10",ld:"BW",w:"Chest endurance"},{name:"KB Swings",rx:"10",ld:"35 lb",w:"Posterior chain"}]},
-      { n:"COOL-DOWN",t:"WEEKEND EARNED",tm:"5 min",c:"#555",ex:[{name:"Walk",rx:"3 min",ld:"Easy"},{name:"Full Body Stretch",rx:"5 min",ld:"Everything"}]},
+      { n:"WARM-UP",t:"PRE-RUN ACTIVATION",tm:"8 min",c:"#555",ex:[{name:"Easy Jog",rx:"4 min",ld:"Very easy pace"},{name:"Dynamic Stretching",rx:"2 min",ld:"Full body"},{name:"Strides",rx:"3×30s",ld:"Build speed gradually"},{name:"Arm Circles",rx:"20 ea",ld:"Shoulder prep"}]},
+      { n:"OBSTACLE RUN",t:wk>=9?"RACE SIMULATION":"ENDURANCE + OBSTACLES",tm:p==="FOUNDATION"?"25–30 min":p==="BUILD"?"35–40 min":p==="PEAK"?"45–55 min":"50–60 min",c:"#FFDC00",
+        note:p==="RACE PREP"?"Race simulation with obstacle breaks":"Run with obstacle stations every mile",
+        ex:[{name:"Steady Run",rx:"5-8 min",ld:"Target pace",w:"First segment"},
+          {name:"Obstacle Station 1",rx:"2 min",ld:"20 burpees + 20 squats",w:"Quick transition"},
+          {name:"Continue Run",rx:"5-8 min",ld:"Resume pace",w:"Second segment"},
+          {name:"Obstacle Station 2",rx:"2 min",ld:"Bear crawl 20m + 10 pull-ups",w:"Maintain form"},
+          {name:"Continue Run",rx:"5-8 min",ld:"Target pace",w:"Third segment"},
+          ...(wk>=5?[{name:"Obstacle Station 3",rx:"2 min",ld:"Carry simulation",w:"Sandbag or KB"}]:[]),
+          {name:"Final Run",rx:"5-10 min",ld:"Strong finish",w:"Track total distance"}]},
+      { n:"GRIP & CARRY",t:"SPARTAN SPECIFIC",tm:"12 min",c:"#FF851B",note:"Focus on grip endurance",
+        ex:[{name:"Dead Hang",rx:`3×${20+wk*2}s`,ld:"From bar",w:"Build grip strength"},{name:"Farmer Walk",rx:"3×60 yd",ld:"Heavy KBs",w:"Don't drop them"},{name:"Plate Pinch",rx:"3×max",ld:"10-25 lb plates",w:"Finger strength"},...(wk>=9?[{name:"Rope Traverse",rx:"3×20 ft",ld:"Horizontal",w:"Rig simulation"}]:[])]},
+      { n:"FINISHER",t:"SPARTAN STRONG",tm:"10 min",c:"#B10DC9",note:"End the week strong",
+        ex:[{name:"Push-Up Pyramid",rx:"1-5-1",ld:"BW",w:"Up and down"},{name:"Pull-Up Pyramid",rx:"1-3-1",ld:"BW",w:"Quality reps"},{name:"Plank Hold",rx:"Max",ld:"BW",w:"Finish strong"}]},
+      { n:"COOL-DOWN",t:"WEEKEND RECOVERY",tm:"10 min",c:"#555",ex:[{name:"Easy Walk",rx:"3 min",ld:"Gradual cooldown"},{name:"Foam Roll",rx:"4 min",ld:"Full body"},{name:"Static Stretching",rx:"3 min",ld:"Hold 30s each"},{name:"Deep Breathing",rx:"2 min",ld:"4-7-8 pattern"}]},
     ]};
 
   return [mon, tue, wed, thu, fri];
